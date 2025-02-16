@@ -1,3 +1,7 @@
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
+};
+
 //taken from here:
 // https://github.com/ryankaplan/vec3/blob/master/src/lib.rs
 #[derive(Copy, Clone, Debug)]
@@ -102,5 +106,123 @@ impl Vec3 {
         T: Fn(f64) -> f64,
     {
         Vec3::new(f(self.x), f(self.y), f(self.z))
+    }
+}
+
+//defining the operators for different operators for our vector class
+
+impl IndexMut<usize> for Vec3 {
+    fn index_mut(&mut self, idx: usize) -> &mut Self::Output {
+        match idx {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            2 => &mut self.z,
+            _ => panic!("Index out of bounds for Vec3: {}", vec3),
+        }
+    }
+}
+
+//index at
+impl Index<usize> for Vec3 {
+    type Output = f64;
+
+    fn index(&self, idx: usize) -> &Self::Output {
+        match idx {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("Index out of bounds for Vec3: {}", idx),
+        }
+    }
+}
+
+//negative
+impl Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -> Self::Output {
+        Vec3::new(-self.x, -self.y, -self.z)
+    }
+}
+
+//add
+impl Add for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, other: Self) -> Self::Output {
+        Vec3::new(self.x + other.x, self.y + other.y, self.z + other.z)
+    }
+}
+
+//+=
+impl AddAssign for Vec3 {
+    fn add_assign(&mut self, other: Self) {
+        self.x += other.x;
+        self.y += other.y;
+        self.z += other.z;
+    }
+}
+
+//-
+impl Sub for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Vec3::new(self.x - other.x, self.y - other.y, self.z - other.z)
+    }
+}
+
+//-=
+impl SubAssign for Vec3 {
+    fn sub_assign(&mut self, other: Self) {
+        self.x -= other.x;
+        self.y -= other.y;
+        self.z -= other.z;
+    }
+}
+
+// mul for floats
+impl Mul<f64> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, scalar: f64) -> Self::Output {
+        Vec3::new(self.x * scalar, self.y * scalar, self.z * scalar)
+    }
+}
+
+//mul for vec3
+impl Mul<Vec3> for f64 {
+    type Output = Vec3;
+    fn mul(self, vec: Vec3) -> Self::Output {
+        vec * self
+    }
+}
+
+// *=
+
+impl MulAssign<f64> for Vec3 {
+    fn mul_assign(&mut self, scalar: f64) {
+        self.x *= scalar;
+        self.y *= scalar;
+        self.z *= scalar;
+    }
+}
+
+// /
+impl Div<f64> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, scalar: f64) -> Self::Output {
+        Vec3::new(self.x / scalar, self.y / scalar, self.z / scalar)
+    }
+}
+
+// /=
+impl DivAssign<f64> for Vec3 {
+    fn div_assign(&mut self, scalar: f64) {
+        let k = 1.0 / scalar;
+        self.x *= k;
+        self.y *= k;
+        self.z *= k;
     }
 }
