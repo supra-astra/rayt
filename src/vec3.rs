@@ -2,9 +2,11 @@ use std::ops::{
     Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign,
 };
 
+use rand::Rng;
+
 //taken from here:
 // https://github.com/ryankaplan/vec3/blob/master/src/lib.rs
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -106,6 +108,32 @@ impl Vec3 {
         T: Fn(f64) -> f64,
     {
         Vec3::new(f(self.x), f(self.y), f(self.z))
+    }
+
+    pub fn random(min: f64, max: f64) -> Vec3 {
+        let mut rng = rand::thread_rng();
+        Vec3::new(
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+            rng.gen_range(min..max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Vec3 {
+        loop {
+            let p = Vec3::random(-1.0, 1.0);
+            if p.length_squared() < 1.0 {
+                return p;
+            }
+        }
+    }
+
+    pub fn distance(&self, other: &Vec3) -> f64 {
+        let dx = self.x - other.x();
+        let dy = self.y - other.y();
+        let dz = self.z - other.z();
+
+        (dx * dx + dy * dy + dz * dz).sqrt()
     }
 }
 
