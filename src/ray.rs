@@ -1,8 +1,7 @@
-use crate::rayt::materials::Material;
-use crate::rayt::point3d::Point3D;
-
 #[cfg(test)]
 use assert_approx_eq::assert_approx_eq;
+
+use crate::{materials::Material, point3d::Point3D};
 
 #[derive(Debug, Clone, Copy)]
 pub struct Ray {
