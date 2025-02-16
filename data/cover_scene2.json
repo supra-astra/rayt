@@ -1,0 +1,123 @@
+{
+  "width": 800,
+  "height": 600,
+  "samples_per_pixel": 64,
+  "max_depth": 50,
+  "sky": {
+    "texture": ""
+  },
+  "camera": {
+    "look_from": {
+      "x": 13.0,
+      "y": 2.0,
+      "z": 3.0
+    },
+    "look_at": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "vup": {
+      "x": 0.0,
+      "y": 1.0,
+      "z": 0.0
+    },
+    "vfov": 20.0,
+    "aspect": 1.3333333333333333
+  },
+  "objects": [
+    {
+      "center": {
+        "x": 0.0,
+        "y": -1000.0,
+        "z": 0.0
+      },
+      "radius": 1000.0,
+      "material": {
+        "Lambertian": {
+          "albedo": [0.5, 0.5, 0.5]
+        }
+      }
+    },
+    {
+      "center": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "radius": 1.0,
+      "material": {
+        "Glass": {
+          "index_of_refraction": 1.5
+        }
+      }
+    },
+    {
+      "center": {
+        "x": -4.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "radius": 1.0,
+      "material": {
+        "Metal": {
+          "albedo": [0.8, 0.6, 0.2],
+          "fuzz": 0.0
+        }
+      }
+    },
+    {
+      "center": {
+        "x": 4.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "radius": 1.0,
+      "material": {
+        "Lambertian": {
+          "albedo": [0.7, 0.3, 0.3]
+        }
+      }
+    },
+    {
+      "center": {
+        "x": 1.0,
+        "y": 0.2,
+        "z": 0.0
+      },
+      "radius": 0.2,
+      "material": {
+        "Lambertian": {
+          "albedo": [0.423, 0.177, 0.324]
+        }
+      }
+    },
+    {
+      "center": {
+        "x": 0.951,
+        "y": 0.2,
+        "z": 0.309
+      },
+      "radius": 0.2,
+      "material": {
+        "Metal": {
+          "albedo": [0.432, 0.118, 0.846],
+          "fuzz": 0.234
+        }
+      }
+    },
+    {
+      "center": {
+        "x": 0.809,
+        "y": 0.2,
+        "z": 0.588
+      },
+      "radius": 0.2,
+      "material": {
+        "Glass": {
+          "index_of_refraction": 1.5
+        }
+      }
+    }
+  ]
+}

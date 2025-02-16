@@ -142,7 +142,7 @@ fn test_sky_perms_to_from_json() {
             }
             _ => (0, 0, "".to_string()),
         },
-        (2048, 1024, "data/earth.jpg".to_string())
+        (2048, 1024, "data/2k_mars.jpg".to_string())
     )
 }
 
@@ -243,7 +243,7 @@ fn test_cover_scene_to_json() {
         objects: _make_cover_world(),
     };
     let serialized = serde_json::to_string_pretty(&config).unwrap();
-    fs::write("/tmp/cover_scene.json", serialized).unwrap();
+    fs::write("/tmp/cover_scene2.json", serialized).unwrap();
 }
 
 #[test]
