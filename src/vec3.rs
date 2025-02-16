@@ -71,7 +71,7 @@ impl Vec3 {
         )
     }
 
-    pub fn normalize(&self) -> Vec3 {
+    pub fn unit_vector(&self) -> Vec3 {
         *self / self.length()
     }
 
@@ -255,6 +255,6 @@ pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
     a.cross(b)
 }
 
-pub fn normalize(v: &Vec3) -> Vec3 {
-    v.normalize()
+pub fn unit_vector(v: &Vec3) -> Vec3 {
+    v.unit_vector()
 }
