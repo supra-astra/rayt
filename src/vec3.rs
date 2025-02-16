@@ -74,7 +74,8 @@ impl Vec3 {
     }
 
     pub fn unit_vector(&self) -> Vec3 {
-        *self / self.length()
+        let length = self.length();
+        Vec3::new(self.x / length, self.y / length, self.z / length)
     }
 
     //useful utilities
@@ -134,6 +135,10 @@ impl Vec3 {
         let dz = self.z - other.z();
 
         (dx * dx + dy * dy + dz * dz).sqrt()
+    }
+
+    pub fn near_zero(&self) -> bool {
+        self.x.abs() < f64::EPSILON && self.y.abs() < f64::EPSILON && self.z.abs() < f64::EPSILON
     }
 }
 
@@ -270,6 +275,14 @@ impl Div<Vec3> for Vec3 {
 
     fn div(self, other: Vec3) -> Self::Output {
         Vec3::new(self.x / other.x, self.y / other.y, self.z / other.z)
+    }
+}
+
+//partial eq
+
+impl PartialEq for Vec3 {
+    fn eq(&self, other: &Vec3) -> bool {
+        self.x == other.x() && self.y == other.y() && self.z == other.z()
     }
 }
 
