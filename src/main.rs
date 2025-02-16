@@ -5,19 +5,28 @@ mod ray;
 mod vec3;
 
 //hit the sphere to get a basic camera running
-fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f64, r: &Ray) -> f64 {
     let oc = r.origin() - center;
     let a = dot(&r.direction(), &r.direction());
     let b = 2.0 * dot(&oc, &r.direction());
     let c = dot(&oc, &oc) - radius * radius;
     let discriminant = b * b - (4.0 * a * c);
-    discriminant > 0.0
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (-b - discriminant.sqrt()) / (2.0 * a);
+    }
 }
 
 // Fixed color function
 fn color(r: &Ray) -> Vec3 {
-    if hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, r) {
-        return Vec3::new(1.0, 0.0, 0.0);
+    let t = hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, r);
+    // if hit_sphere(Vec3::new(0.0, 0.0, -1.0), 0.5, r) {
+    //     return Vec3::new(1.0, 0.0, 0.0);
+    // }
+    if t > 0.0 {
+        let N = unit_vector(&(r.at(t) - Vec3::new(0.0, 0.0, -1.0)));
+        return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
     }
     let unit_direction = unit_vector(&r.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
