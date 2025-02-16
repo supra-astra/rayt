@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::point3d::Point3D;
 use crate::ray::Ray;
-use crate::vec3::Vec3;
 
 #[cfg(test)]
 use assert_approx_eq::assert_approx_eq;
@@ -10,27 +10,27 @@ use assert_approx_eq::assert_approx_eq;
 #[serde(from = "CameraParams")]
 pub struct Camera {
     #[serde(skip_serializing)]
-    pub origin: Vec3, // Note, don't serialize any of the computed fields.
+    pub origin: Point3D, // Note, don't serialize any of the computed fields.
     #[serde(skip_serializing)]
-    pub lower_left_corner: Vec3,
+    pub lower_left_corner: Point3D,
     #[serde(skip_serializing)]
     pub focal_length: f64,
     #[serde(skip_serializing)]
-    pub horizontal: Vec3,
+    pub horizontal: Point3D,
     #[serde(skip_serializing)]
-    pub vertical: Vec3,
-    look_from: Vec3,
-    look_at: Vec3,
-    vup: Vec3,
+    pub vertical: Point3D,
+    look_from: Point3D,
+    look_at: Point3D,
+    vup: Point3D,
     vfov: f64, // vertical field-of-view in degrees
     aspect: f64,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CameraParams {
-    pub look_from: Vec3,
-    pub look_at: Vec3,
-    pub vup: Vec3,
+    pub look_from: Point3D,
+    pub look_at: Point3D,
+    pub vup: Point3D,
     pub vfov: f64, // vertical field-of-view in degrees
     pub aspect: f64,
 }
@@ -43,9 +43,9 @@ impl From<CameraParams> for Camera {
 
 impl Camera {
     pub fn new(
-        look_from: Vec3,
-        look_at: Vec3,
-        vup: Vec3,
+        look_from: Point3D,
+        look_at: Point3D,
+        vup: Point3D,
         vfov: f64, // vertical field-of-view in degrees
         aspect: f64,
     ) -> Camera {
@@ -87,9 +87,9 @@ impl Camera {
 #[test]
 fn test_camera() {
     let camera = Camera::new(
-        Vec3::new(0.0, 0.0, 0.0),
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
+        Point3D::new(0.0, 0.0, 0.0),
+        Point3D::new(0.0, 0.0, -1.0),
+        Point3D::new(0.0, 1.0, 0.0),
         90.0,
         (800.0 / 600.0) as f64,
     );
@@ -105,28 +105,28 @@ fn test_camera() {
 #[test]
 fn test_camera_get_ray() {
     let camera = Camera::new(
-        Vec3::new(-4.0, 4.0, 1.0),
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
+        Point3D::new(-4.0, 4.0, 1.0),
+        Point3D::new(0.0, 0.0, -1.0),
+        Point3D::new(0.0, 1.0, 0.0),
         160.0,
         (800 / 600) as f64,
     );
     let ray = camera.get_ray(0.5, 0.5);
-    assert_eq!(ray.origin().x(), -4.0);
-    assert_eq!(ray.origin().y(), 4.0);
-    assert_eq!(ray.origin().z(), 1.0);
+    assert_eq!(ray.origin.x(), -4.0);
+    assert_eq!(ray.origin.y(), 4.0);
+    assert_eq!(ray.origin.z(), 1.0);
 
-    assert_approx_eq!(ray.direction().x(), (2.0 / 3.0));
-    assert_approx_eq!(ray.direction().y(), -(2.0 / 3.0));
-    assert_approx_eq!(ray.direction().z(), -(1.0 / 3.0));
+    assert_approx_eq!(ray.direction.x(), (2.0 / 3.0));
+    assert_approx_eq!(ray.direction.y(), -(2.0 / 3.0));
+    assert_approx_eq!(ray.direction.z(), -(1.0 / 3.0));
 }
 
 #[test]
 fn test_to_json() {
     let camera = Camera::new(
-        Vec3::new(-4.0, 4.0, 1.0),
-        Vec3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
+        Point3D::new(-4.0, 4.0, 1.0),
+        Point3D::new(0.0, 0.0, -1.0),
+        Point3D::new(0.0, 1.0, 0.0),
         160.0,
         (800 / 600) as f64,
     );

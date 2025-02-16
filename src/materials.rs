@@ -1,15 +1,19 @@
 use jpeg_decoder::Decoder;
-use std::{fs::File, io::BufReader};
-
 use palette::Srgb;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
+use std::fs::File;
+use std::io::BufReader;
 
-use crate::ray::{HitRecord, Ray};
+use crate::point3d::Point3D;
+use crate::ray::HitRecord;
+use crate::ray::Ray;
 
 pub trait Scatterable {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)>;
 }
+
 // https://docs.rs/serde_with/1.9.4/serde_with/macro.serde_conv.html
 serde_with::serde_conv!(
     SrgbAsArray,
@@ -19,6 +23,8 @@ serde_with::serde_conv!(
         Ok(Srgb::new(value[0], value[1], value[2]))
     }
 );
+
+// TODO: replace this with the more elegant implementation in config.rs
 serde_with::serde_conv!(
     TexturePixelsAsPath,
     Vec<u8>,
@@ -26,7 +32,6 @@ serde_with::serde_conv!(
     |value: &str| -> Result<_, std::convert::Infallible> { Ok(load_texture_image(value).0) }
 );
 
-//material type can be of different types
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum Material {
     Lambertian(Lambertian),
@@ -39,7 +44,6 @@ pub enum Material {
 impl Scatterable for Material {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
         match self {
-            //differnt scatter properties for differnt materials
             Material::Lambertian(l) => l.scatter(ray, hit_record),
             Material::Metal(m) => m.scatter(ray, hit_record),
             Material::Glass(g) => g.scatter(ray, hit_record),
@@ -48,6 +52,7 @@ impl Scatterable for Material {
         }
     }
 }
+
 #[derive(Debug, Clone, Copy, Deserialize, Serialize)]
 pub struct Light {}
 
@@ -57,15 +62,12 @@ impl Light {
     }
 }
 
-//scatter for light properties
 impl Scatterable for Light {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
-        //fully scatter
+    fn scatter(&self, _ray: &Ray, _hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
         Some((None, Srgb::new(1.0, 1.0, 1.0)))
     }
 }
 
-//scatter for Lambertian
 #[serde_with::serde_as]
 #[derive(Debug, Clone, Copy, Deserialize, Serialize)]
 pub struct Lambertian {
@@ -81,7 +83,7 @@ impl Lambertian {
 
 impl Scatterable for Lambertian {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
-        let mut scatter_direction = hit_record.normal + Vec3::random_in_unit_sphere();
+        let mut scatter_direction = hit_record.normal + Point3D::random_in_unit_sphere();
         if scatter_direction.near_zero() {
             scatter_direction = hit_record.normal;
         }
@@ -106,19 +108,19 @@ impl Metal {
     }
 }
 
-fn reflect(v: &Vec3, n: &Vec3) -> Vec3 {
+fn reflect(v: &Point3D, n: &Point3D) -> Point3D {
     *v - *n * (2.0 * v.dot(n))
 }
 
 impl Scatterable for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
-        let reflected = reflect(&ray.direction(), &hit_record.normal);
+        let reflected = reflect(&ray.direction, &hit_record.normal);
         let scattered = Ray::new(
             hit_record.point,
-            reflected + Vec3::random_in_unit_sphere() * self.fuzz,
+            reflected + Point3D::random_in_unit_sphere() * self.fuzz,
         );
         let attenuation = self.albedo;
-        if scattered.direction().dot(&hit_record.normal) > 0.0 {
+        if scattered.direction.dot(&hit_record.normal) > 0.0 {
             Some((Some(scattered), attenuation))
         } else {
             None
@@ -139,7 +141,7 @@ impl Glass {
     }
 }
 
-fn refract(uv: &Vec3, n: &Vec3, etai_over_etat: f64) -> Vec3 {
+fn refract(uv: &Point3D, n: &Point3D, etai_over_etat: f64) -> Point3D {
     let cos_theta = ((-*uv).dot(n)).min(1.0);
     let r_out_perp = (*uv + *n * cos_theta) * etai_over_etat;
     let r_out_parallel = *n * (-1.0 * (1.0 - r_out_perp.length_squared()).abs().sqrt());
@@ -152,6 +154,25 @@ fn reflectance(cosine: f64, ref_idx: f64) -> f64 {
     r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
 }
 
+#[test]
+fn test_refract() {
+    let uv = Point3D::new(1.0, 1.0, 0.0);
+    let n = Point3D::new(-1.0, 0.0, 0.0);
+    let etai_over_etat = 1.0;
+    let expected = Point3D::new(0.0, 1.0, 0.0);
+    let actual = refract(&uv, &n, etai_over_etat);
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn test_reflectance() {
+    let cosine = 0.0;
+    let ref_idx = 1.5;
+    let expected = 1.0;
+    let actual = reflectance(cosine, ref_idx);
+    assert_eq!(actual, expected);
+}
+
 impl Scatterable for Glass {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
         let mut rng = rand::thread_rng();
@@ -161,7 +182,7 @@ impl Scatterable for Glass {
         } else {
             self.index_of_refraction
         };
-        let unit_direction = ray.direction().unit_vector();
+        let unit_direction = ray.direction.unit_vector();
         let cos_theta = (-unit_direction).dot(&hit_record.normal).min(1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
         let cannot_refract = refraction_ratio * sin_theta > 1.0;
@@ -234,7 +255,7 @@ impl Texture {
 
 impl Scatterable for Texture {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)> {
-        let mut scatter_direction = hit_record.normal + Vec3::random_in_unit_sphere();
+        let mut scatter_direction = hit_record.normal + Point3D::random_in_unit_sphere();
         if scatter_direction.near_zero() {
             scatter_direction = hit_record.normal;
         }
@@ -243,4 +264,20 @@ impl Scatterable for Texture {
         let attenuation = self.get_albedo(hit_record.u, hit_record.v);
         Some((Some(scattered), attenuation))
     }
+}
+
+#[test]
+fn test_texture() {
+    let _world = Material::Texture(Texture::new(
+        Srgb::new(1.0, 1.0, 1.0),
+        "data/earth.jpg",
+        0.0,
+    ));
+}
+
+#[test]
+fn test_to_json() {
+    let m = Metal::new(Srgb::new(0.8, 0.8, 0.8), 2.0);
+    let serialized = serde_json::to_string(&m).unwrap();
+    assert_eq!(r#"{"albedo":[0.8,0.8,0.8],"fuzz":2.0}"#, serialized,);
 }
