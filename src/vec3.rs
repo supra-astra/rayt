@@ -12,7 +12,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn new(e0: f64, e1: f64, e2: f64) -> &Vec3 {
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
         Vec3 {
             x: e0,
             y: e1,
@@ -117,7 +117,7 @@ impl IndexMut<usize> for Vec3 {
             0 => &mut self.x,
             1 => &mut self.y,
             2 => &mut self.z,
-            _ => panic!("Index out of bounds for Vec3: {}", vec3),
+            _ => panic!("Index out of bounds for Vec3"),
         }
     }
 }
