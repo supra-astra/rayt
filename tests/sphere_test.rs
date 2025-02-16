@@ -1,15 +1,18 @@
+use palette::Srgb;
+use rayt::{materials::{Lambertian, Material, Texture}, ray::{Hittable, Ray}, sphere::Sphere, vec3::Vec3};
+
 #[test]
 fn test_sphere_hit() {
-    let center = Point3D::new(0.0, 0.0, 0.0);
+    let center = Vec3::new(0.0, 0.0, 0.0);
     let sphere = Sphere::new(center, 1.0, Material::Glass(Glass::new(1.5)));
-    let ray = Ray::new(Point3D::new(0.0, 0.0, -5.0), Point3D::new(0.0, 0.0, 1.0));
+    let ray = Ray::new(Vec3::new(0.0, 0.0, -5.0), Vec3::new(0.0, 0.0, 1.0));
     let hit = sphere.hit(&ray, 0.0, f64::INFINITY);
     assert_eq!(hit.unwrap().t, 4.0);
 }
 
 fn test_to_json() {
     let sphere = Sphere::new(
-        Point3D::new(0.0, 0.0, 0.0),
+        Vec3::new(0.0, 0.0, 0.0),
         1.0,
         Material::Lambertian(Lambertian::new(Srgb::new(
             0.5 as f32, 0.5 as f32, 0.5 as f32,
@@ -25,7 +28,7 @@ fn test_to_json() {
     assert_eq!(sphere.radius, s.radius);
 
     let textured_sphere = Sphere::new(
-        Point3D::new(0.0, 0.0, 0.0),
+        Vec3::new(0.0, 0.0, 0.0),
         1.0,
         Material::Texture(Texture::new(
             Srgb::new(0.5 as f32, 0.5 as f32, 0.5 as f32),

@@ -1,4 +1,4 @@
-use crate::vec3::Vec3;
+use crate::{materials::Material, vec3::Vec3};
 
 pub type Point3 = Vec3;
 

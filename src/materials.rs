@@ -5,10 +5,7 @@ use palette::Srgb;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    ray::{HitRecord, Ray},
-    vec3::Vec3,
-};
+use crate::ray::{HitRecord, Ray};
 
 pub trait Scatterable {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord) -> Option<(Option<Ray>, Srgb)>;
