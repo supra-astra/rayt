@@ -226,3 +226,35 @@ impl DivAssign<f64> for Vec3 {
         self.z *= k;
     }
 }
+
+//element wise multiplication
+impl Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, other: Vec3) -> Self::Output {
+        Vec3::new(self.x * other.x, self.y * other.y, self.z * other.z)
+    }
+}
+
+//element wise division
+impl Div<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, other: Vec3) -> Self::Output {
+        Vec3::new(self.x / other.x, self.y / other.y, self.z / other.z)
+    }
+}
+
+//other operations
+
+pub fn dot(a: &Vec3, b: &Vec3) -> f64 {
+    a.dot(b)
+}
+
+pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
+    a.cross(b)
+}
+
+pub fn normalize(v: &Vec3) -> Vec3 {
+    v.normalize()
+}
