@@ -6,7 +6,7 @@ use rand::Rng;
 
 //taken from here:
 // https://github.com/ryankaplan/vec3/blob/master/src/lib.rs
-#[derive(Copy, Clone, Debug, Deserialize, Serialize)]
+#[derive(Copy, Clone, Debug)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
