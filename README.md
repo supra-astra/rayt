@@ -1,3 +1,3 @@
 ## rayt
 
-A raytracer written in Rust.
+A simple raytracer written in Go.

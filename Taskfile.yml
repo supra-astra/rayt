@@ -1,0 +1,25 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  setup:
+    desc: Create required directories
+    cmds:
+      - mkdir -p dist
+
+  build:
+    desc: Build the Go application
+    deps: [setup]
+    cmds:
+      - go build -o dist/image_generator main.go
+
+  generate:
+    desc: Generate the PPM image in the dist folder
+    deps: [build]
+    cmds:
+      - cd dist && ./image_generator > gradient.ppm
+    
+  default:
+    desc: Run the complete workflow - build and generate image
+    deps: [generate]
