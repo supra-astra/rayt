@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+
+	"github.com/supra-astra/rayt/color"
+	"github.com/supra-astra/rayt/vec3"
 )
 
 func main() {
@@ -20,11 +23,13 @@ func main() {
 			g := float64(j) / (float64(image_height) - 1)
 			b := 0.0
 
-			ir := int(255.999 * r)
-			ig := int(255.999 * g)
-			ib := int(255.999 * b)
+			// ir := int(255.999 * r)
+			// ig := int(255.999 * g)
+			// ib := int(255.999 * b)
 
-			fmt.Printf("%d %d %d\n", ir, ig, ib)
+			// fmt.Printf("%d %d %d\n", ir, ig, ib)
+			pixelColor := vec3.Vec3{E: [3]float64{r, g, b}}
+			color.WriteColor(pixelColor)
 		}
 	}
 	log.Printf("\rDone.				\n")
