@@ -12,7 +12,7 @@ tasks:
     desc: Build the Go application
     deps: [setup]
     cmds:
-      - go build -o dist/image_generator main.go
+      - go build -o dist/rayt main.go
 
   generate:
     desc: Generate the PPM image in the dist folder
