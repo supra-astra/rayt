@@ -1,6 +1,9 @@
 package vec3
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 //classes for storing geometric vectors and colors.
 // for our purposes the three corrdinates suffice.
@@ -80,4 +83,54 @@ func (v Vec3) Length() float64 {
 
 func (v Vec3) LengthSquared() float64 {
 	return v.E[0]*v.E[0] + v.E[1]*v.E[1] + v.E[2]*v.E[2]
+}
+
+//vector utility functions
+
+func (v Vec3) String() string {
+	return fmt.Sprintf("%f %f %f", v.E[0], v.E[1], v.E[2])
+}
+
+func VecAdd(v Vec3, u Vec3) Vec3 {
+	return Vec3{
+		E: [3]float64{v.E[0] + u.E[0], u.E[1] + v.E[1], u.E[2] + v.E[2]},
+	}
+}
+
+func VecSub(u Vec3, v Vec3) Vec3 {
+	return Vec3{
+		E: [3]float64{u.E[0] - v.E[0], u.E[1] - v.E[1], u.E[2] - v.E[2]},
+	}
+}
+
+func VecMul(u Vec3, v Vec3) Vec3 {
+	return Vec3{
+		E: [3]float64{u.E[0] * v.E[0], u.E[1] * v.E[1], u.E[2] * v.E[2]},
+	}
+}
+
+func ScaleUp(t float64, v Vec3) Vec3 {
+	return Vec3{
+		E: [3]float64{t * v.E[0], t * v.E[1], t * v.E[2]},
+	}
+}
+
+func ScaleDown(t float64, v Vec3) Vec3 {
+	return ScaleUp(1/t, v)
+}
+
+func DotProduct(u Vec3, v Vec3) float64 {
+	return u.E[0]*v.E[0] + u.E[1]*v.E[1] + u.E[2]*v.E[2]
+}
+
+func CrossProduct(u Vec3, v Vec3) Vec3 {
+	return Vec3{
+		E: [3]float64{u.E[1]*v.E[2] - u.E[2]*v.E[1],
+			u.E[2]*v.E[0] - u.E[0]*v.E[2],
+			u.E[0]*v.E[1] - u.E[1]*v.E[0]},
+	}
+}
+
+func (v Vec3) UnitVector() Vec3 {
+	return ScaleDown(v.Length(), v)
 }
