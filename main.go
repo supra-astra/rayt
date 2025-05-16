@@ -1,12 +1,7 @@
 package main
 
-import (
-	"fmt"
-	"log"
-
-	"github.com/supra-astra/rayt/color"
-	"github.com/supra-astra/rayt/vec3"
-)
+import "fmt"
+import "log"
 
 func main() {
 	//image
@@ -14,23 +9,17 @@ func main() {
 	image_height := 256
 
 	//render
-	fmt.Printf("P3\n%d %d\n255\n", image_width, image_height)
+	fmt.Printf("P3\n %d %d\n255\n", image_width, image_height)
 
-	for j := range image_height {
+	for j := 0; j < image_height; j++ {
 		log.Printf("\rScanlines remaining: %d ", (image_height - j))
-		for i := range image_width {
-			r := float64(i) / (float64(image_width) - 1)
-			g := float64(j) / (float64(image_height) - 1)
-			b := 0.0
-
-			// ir := int(255.999 * r)
-			// ig := int(255.999 * g)
-			// ib := int(255.999 * b)
-
-			// fmt.Printf("%d %d %d\n", ir, ig, ib)
-			pixelColor := vec3.Vec3{E: [3]float64{r, g, b}}
-			color.WriteColor(pixelColor)
+		for i := 0; i < image_width; i++ {
+			pixelColor := Color{[3]float64{
+				float64(i) / float64(image_width-1),
+				float64(j) / float64(image_height-1),
+				0.0}}
+			pixelColor.WriteColor()
 		}
 	}
-	log.Printf("\rDone.				\n")
+	log.Printf("\rDone.                  \n")
 }
