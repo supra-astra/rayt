@@ -39,5 +39,8 @@ func (s *Sphere) Hit(r *Ray, tMin, tMax float64) (bool, HitRecord) {
 		T:      root,
 	}
 
+	outwardNormal := ScalarDiv(VecSub(&rec.P, &s.Center), s.Radius)
+	rec.SetFaceNormal(r, outwardNormal)
+
 	return true, rec
 }
