@@ -27,6 +27,7 @@ func RayColor(r *Ray) *Color {
 		normal := UnitVector(VecSub(&point, NewPoint3(0, 0, -1)))
 		return ScalarMul(VecAdd(normal, NewVec3(1, 1, 1)), 0.5)
 	}
+
 	unitDirection := UnitVector(&r.Dir)
 	a := 0.5 * (unitDirection.Y() + 1.0)
 	return VecAdd(
