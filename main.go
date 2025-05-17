@@ -3,27 +3,36 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 )
 
-func hit_sphere(center *Point3, radius float64, r *Ray) bool {
+func hit_sphere(center *Point3, radius float64, r *Ray) float64 {
 	oc := VecSub(&r.Orig, center)
 	a := DotProduct(&r.Dir, &r.Dir)
-	b := -2.0 * DotProduct(&r.Dir, oc)
+	b := DotProduct(&r.Dir, oc)
 	c := DotProduct(oc, oc) - (radius * radius)
-	discriminant := b*b - (4 * a * c)
-	return (discriminant >= 0)
+	discriminant := b*b - (a * c)
+	// return (discriminant >= 0)
+	if discriminant < 0 {
+		return -1.0
+	}
+	return (-b - math.Sqrt(discriminant)) / a
+
 }
 
 func RayColor(r *Ray) *Color {
-	if hit_sphere(NewPoint3(0, 0, -1), 0.5, r) {
-		return NewColor(1, 0, 0)
+	t := hit_sphere(NewPoint3(0, 0, -1), 0.5, r)
+	if t > 0.0 {
+		point := r.At(t)
+		normal := UnitVector(VecSub(&point, NewPoint3(0, 0, -1)))
+		return ScalarMul(VecAdd(normal, NewVec3(1, 1, 1)), 0.5)
 	}
 	unitDirection := UnitVector(&r.Dir)
-	a := (unitDirection.Y() + 1.0) * 0.5
-	partA := 1.0 - a
-	partB := NewColor(1.0, 1.0, 1.0)
-	partC := NewColor(0.5, 0.7, 1.0)
-	return VecAdd(ScalarMul(partB, partA), ScalarMul(partC, a))
+	a := 0.5 * (unitDirection.Y() + 1.0)
+	return VecAdd(
+		ScalarMul(NewColor(1.0, 1.0, 1.0), 1.0-a),
+		ScalarMul(NewColor(0.5, 0.7, 1.0), a),
+	)
 }
 
 func main() {
