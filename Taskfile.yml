@@ -18,7 +18,7 @@ tasks:
     desc: Generate the PPM image in the dist folder
     deps: [build]
     cmds:
-      - ./dist/rayt > dist/image.ppm 
+      - ./dist/rayt > ./dist/image.ppm 
     
   default:
     desc: Run the complete workflow - build and generate image
