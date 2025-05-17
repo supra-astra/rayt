@@ -1,12 +1,19 @@
 package main
 
-import "fmt"
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 //utility to write a single pixel's color out to the std output
-//
 
 type Color = Vec3
+
+func NewColor(l, b, h float64) *Color {
+	return &Color{
+		E: [3]float64{l, b, h},
+	}
+}
 
 func (pixelColor *Color) WriteColor() {
 	r := pixelColor.X()
