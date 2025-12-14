@@ -5,12 +5,12 @@ import (
 	"math"
 )
 
-// Vec3 is the fundamental structure for colors (RGB) and pointers/directions (XYZ)
+// Vec3 is the fundamental structure for colors (RGB) and points/directions (XYZ).
 type Vec3 struct {
 	X, Y, Z float64
 }
 
-// add return sthe vector sum of u and v
+// Add returns the vector sum of u and v.
 func (u Vec3) Add(v Vec3) Vec3 {
 	return Vec3{u.X + v.X, u.Y + v.Y, u.Z + v.Z}
 }
